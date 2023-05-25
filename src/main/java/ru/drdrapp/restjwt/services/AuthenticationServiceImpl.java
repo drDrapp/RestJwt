@@ -9,6 +9,7 @@ import ru.drdrapp.restjwt.dto.request.SignUpRequest;
 import ru.drdrapp.restjwt.dto.response.JwtAuthenticationResponse;
 import ru.drdrapp.restjwt.models.DgUser;
 import ru.drdrapp.restjwt.models.Role;
+import ru.drdrapp.restjwt.models.State;
 import ru.drdrapp.restjwt.repositories.DgUserRepository;
 import ru.drdrapp.restjwt.services.interfaces.AuthenticationService;
 import ru.drdrapp.restjwt.services.interfaces.JwtService;
@@ -33,10 +34,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
         String hashPassword = passwordEncoder.encode(request.getPassword());
         var dgUser = DgUser.builder()
+                .login(request.getLogin())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .hashPassword(hashPassword)
                 .roles(Collections.singleton(Role.USER))
+                .state(State.ACTIVE)
                 .build();
         dgUserRepository.save(dgUser);
         var jwt = jwtService.generateToken(dgUser);
@@ -45,11 +48,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-        var user = dgUserRepository.findByLogin(request.getLogin())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtService.generateToken(user);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+        var dgUser = dgUserRepository.findByLogin(request.getLogin())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid authentication."));
+        var jwt = jwtService.generateToken(dgUser);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 }

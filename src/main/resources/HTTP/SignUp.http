@@ -1,0 +1,16 @@
+###
+POST http://localhost:8080/api/auth/signUp
+Content-Type: application/json
+
+{
+  "login": "j",
+  "firstName": "John",
+  "lastName": "McClane",
+  "email": "die@hard.com",
+  "password": "j",
+  "state": "ACTIVE"
+}
+
+> {%
+ client.global.set("auth_token", response.body.token);
+%}

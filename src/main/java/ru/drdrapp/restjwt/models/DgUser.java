@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "dg_user")
 public class DgUser {
-    public static final int START_SEQ = 1;
+    public static final int START_SEQ = 10;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dg_user_gen")
     @SequenceGenerator(name = "dg_user_gen", sequenceName = "dg_user_seq", initialValue = DgUser.START_SEQ, allocationSize = 1)

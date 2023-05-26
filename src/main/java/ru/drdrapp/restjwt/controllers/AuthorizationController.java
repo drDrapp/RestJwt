@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/data")
+@RequestMapping("/api")
 public class AuthorizationController {
 
-    @GetMapping
-    public ResponseEntity<String> getAuthorizedData(Response response) {
+    @GetMapping("/data")
+    public ResponseEntity<String> getAuthorizedData() {
         return ResponseEntity.ok(">>>> Authorized data <<<<");
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> dataAdminData() {
+        return ResponseEntity.ok(">>>> Admin data <<<<");
     }
 
 }
